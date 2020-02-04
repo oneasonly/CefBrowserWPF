@@ -1,0 +1,168 @@
+﻿<Window x:Class="CefSharp.MinimalExample.Wpf.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:wpf="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
+        xmlns:cef="clr-namespace:CefSharp;assembly=CefSharp.Core"
+        xmlns:behaviours="clr-namespace:CefSharp.MinimalExample.Wpf.Behaviours"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" 
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:keyb="clr-namespace:ScreenKeyboard;assembly=ScreenKeyboard"
+        WindowState="Maximized">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles/GeneralStyle.xaml"/>
+                <ResourceDictionary Source="Styles/DrawerKBStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <materialDesign:DrawerHost Name="KeyboardHost"
+                               Style="{DynamicResource KeyboardDrawer}"
+              HorizontalAlignment="Stretch"
+              VerticalAlignment="Stretch" 
+                               >
+
+        <materialDesign:DrawerHost.BottomDrawerContent>
+            <materialDesign:ColorZone Mode="Standard" >
+                <keyb:FullKeyboard x:Name="BotFullKeyboard"/>
+            </materialDesign:ColorZone>
+        </materialDesign:DrawerHost.BottomDrawerContent>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0" />
+                <RowDefinition />
+                <RowDefinition Height="0" />
+            </Grid.RowDefinitions>
+
+            <Grid>
+                <Grid.Resources>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Margin" Value="2,5" />
+                    </Style>
+                    <Style TargetType="{x:Type TextBox}">
+                        <Setter Property="Margin" Value="2,5" />
+                    </Style>
+                </Grid.Resources>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Button Content="Back" Command="{Binding WebBrowser.BackCommand, ElementName=Browser}" Width="50"/>
+                <Button Content="Forward" Command="{Binding WebBrowser.ForwardCommand, ElementName=Browser}" Grid.Column="1" Width="60"/>
+                <TextBox x:Name="txtBoxAddress" Text="{Binding Address, ElementName=Browser, FallbackValue=www.google.com}" Grid.Column="2" FontSize="12" BorderBrush="Gray" BorderThickness="1">
+                    <i:Interaction.Behaviors>
+                        <behaviours:TextBoxBindingUpdateOnEnterBehaviour />
+                    </i:Interaction.Behaviors>
+                </TextBox>
+                <Button Content="Print..." Command="{Binding WebBrowser.PrintCommand, ElementName=Browser}" Grid.Column="3" Width="50" />
+                <Button Content="View source" Command="{Binding WebBrowser.ViewSourceCommand, ElementName=Browser}" Grid.Column="4" Width="75" />
+            </Grid>
+
+            <Border Grid.Row="1" BorderBrush="Gray" BorderThickness="0">
+                <wpf:ChromiumWebBrowser x:Name="Browser"
+                                    Address="www.google.com"
+                                    Initialized="Browser_Initialized"
+                                    Loaded="Browser_Loaded">
+                    <i:Interaction.Behaviors>
+                        <behaviours:HoverLinkBehaviour x:Name="HoverLinkBehaviour"/>
+                    </i:Interaction.Behaviors>
+                </wpf:ChromiumWebBrowser>
+            </Border>
+
+            <Button Grid.Row="1"
+                Command="{Binding WebBrowser.BackCommand, ElementName=Browser}" 
+                    Name="buttonBack"
+                Margin="10"
+                BorderBrush="{StaticResource PrimaryHueDarkBrush}"
+                Background="{StaticResource PrimaryHueDarkBrush}"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top">
+                <materialDesign:PackIcon Kind="ArrowLeftBold" 
+                                            Height="70" Width="100" 
+                                                Foreground="{StaticResource MaterialDesignDarkForeground}"                                                 
+                                            />
+            </Button>
+
+            <Button Grid.Row="1"
+                    Name="buttonHome"
+                Margin="10"
+                BorderBrush="{StaticResource PrimaryHueDarkBrush}"
+                Background="{StaticResource PrimaryHueDarkBrush}"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                    Padding="20"
+                    Click="buttonHome_Click">
+                <materialDesign:PackIcon Kind="Home" 
+                                            Height="50" Width="50" 
+                                                Foreground="{StaticResource MaterialDesignDarkForeground}"                                                 
+                                            />
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFloatingActionButton}">
+                        <Setter Property="Height" Value="Auto" />
+                        <Setter Property="Width" Value="Auto" />
+                        <Setter Property="Visibility" Value="Hidden" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsEnabled, ElementName=buttonBack}" Value="True">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+
+            <Button Grid.Row="1" 
+                Margin="0 0 -15 400"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"   
+                    Click="Button_Click"
+                    Background="{x:Null}"
+                    BorderBrush="{x:Null}">
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedButton}">
+                        <Setter Property="Height" Value="Auto" />
+                        <Setter Property="Visibility" Value="Hidden" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsBottomDrawerOpen, ElementName=KeyboardHost}" Value="True">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+                <materialDesign:PackIcon Kind="CloseCircleOutline" 
+                                         Height="135" Width="135" 
+                                         Foreground="{StaticResource PrimaryHueMidBrush}"
+                                         />
+            </Button>
+
+            <ProgressBar IsIndeterminate="{Binding IsLoading, ElementName=Browser}"
+                     HorizontalAlignment="Stretch"
+                     VerticalAlignment="Bottom"
+                     Width="Auto"
+                     Grid.Row="1"
+                     Height="8"
+                     Visibility="{Binding IsLoading, ElementName=Browser, Converter={StaticResource BooleanToVisibilityConverter}}"
+                     BorderThickness="0" />
+
+            <ProgressBar IsIndeterminate="true"
+                     Style="{StaticResource MaterialDesignCircularProgressBar}"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Center"
+                     Grid.Row="1"
+                     Height="50" Width="50"                    
+                     Value="0"
+                         BorderThickness="40"
+                     Visibility="{Binding IsLoading, ElementName=Browser, Converter={StaticResource BooleanToVisibilityConverter}}"
+                     />
+
+        </Grid>
+
+    </materialDesign:DrawerHost>
+
+</Window>
