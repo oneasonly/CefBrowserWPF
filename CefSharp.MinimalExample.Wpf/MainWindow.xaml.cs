@@ -6,18 +6,25 @@ using MaterialDesignThemes.Wpf;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using Idle;
 
 namespace CefSharp.MinimalExample.Wpf
 {
     public partial class MainWindow : Window
     {
+        private IdleDetector idleDetector;
+        private int idleTimedefault = 150;
         public MainWindow()
         {
             InitializeComponent();
             //this.Topmost = true;
-            //this.WindowState = WindowState.Maximized;
-            //this.WindowStyle = WindowStyle.None;
+            this.WindowState = WindowState.Maximized;
+            this.WindowStyle = WindowStyle.None;
+            idleDetector = new IdleDetector(this, idleTimedefault);
+            idleDetector.IsIdle += OnIdle;
         }
+
+        private void OnIdle(object sender, EventArgs e) => GoHome();
 
         private void Browser_Initialized(object sender, System.EventArgs e)
         {
@@ -58,6 +65,11 @@ namespace CefSharp.MinimalExample.Wpf
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            HideKeyboard(sender);
+        }
+
+        private static void HideKeyboard(object sender)
+        {
             try
             {
                 DrawerHost.CloseDrawerCommand.Execute(null, sender as FrameworkElement);
@@ -79,12 +91,18 @@ namespace CefSharp.MinimalExample.Wpf
 
         private async void buttonHome_Click(object sender, RoutedEventArgs e)
         {
+            await GoHome();
+            HideKeyboard(sender);
+        }
+
+        private async Task GoHome()
+        {
             Browser.Stop();
             while (Browser.CanGoBack)
             {
-                if(!Browser.IsLoading)
+                if (!Browser.IsLoading)
                 {
-                    Browser.Back();                    
+                    Browser.Back();
                 }
                 await Task.Delay(50);
             }

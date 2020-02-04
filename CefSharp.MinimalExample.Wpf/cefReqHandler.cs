@@ -20,7 +20,7 @@ namespace CefSharp.MinimalExample.Wpf
             {
                 OnZoomEvent();
             }
-            //else DefaultZoomEvent();
+            else DefaultZoomEvent();
 
             bool isAddressCheck = !request.Url.Contains(StaticData.urlHome) && !request.Url.Contains("82.209.205.124:8080") && !request.Url.Contains("82.209.205.124:8080") && !request.Url.Contains("82.209.205.124:8080");
             bool isFileCheck = request.Url.Contains(".pdf") || request.Url.Contains(".jpg") || request.Url.Contains(".JPG") || request.Url.Contains(".png");
