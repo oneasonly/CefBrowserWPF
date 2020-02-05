@@ -30,6 +30,12 @@
             </materialDesign:ColorZone>
         </materialDesign:DrawerHost.BottomDrawerContent>
 
+        <materialDesign:DrawerHost.TopDrawerContent>
+            <materialDesign:ColorZone Mode="Standard"  >
+                <keyb:FullKeyboard x:Name="TopFullKeyboard"/>
+            </materialDesign:ColorZone>
+        </materialDesign:DrawerHost.TopDrawerContent>
+
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="0" />

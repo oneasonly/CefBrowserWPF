@@ -13,13 +13,13 @@ namespace CefSharp.MinimalExample.Wpf
     public partial class MainWindow : Window
     {
         private IdleDetector idleDetector;
-        private int idleTimedefault = 150;
+        private int idleTimedefault = 120;
         public MainWindow()
         {
             InitializeComponent();
             //this.Topmost = true;
             this.WindowState = WindowState.Maximized;
-            //this.WindowStyle = WindowStyle.None;
+            this.WindowStyle = WindowStyle.None;
             idleDetector = new IdleDetector(this, idleTimedefault);
             idleDetector.IsIdle += OnIdle;
         }
@@ -69,25 +69,37 @@ namespace CefSharp.MinimalExample.Wpf
         private void Browser_VirtualKeyboardRequested(object sender, VirtualKeyboardRequestedEventArgs e)
         {
             if (e.TextInputMode == Enums.TextInputMode.None) HideKeyboard(sender);
-            else OpenKeyboard();
+            else OpenKeyboard(e);
         }
 
-        private void OpenKeyboard()
+        private async Task OpenKeyboard(VirtualKeyboardRequestedEventArgs e)
         {
-            double kbHeight = 400;
-            Dock dockArg = Dock.Bottom;
-            this.Dispatcher.Invoke(() =>
+            try
             {
-                try
+                double kbHeight = 400;
+                Dock dockArg = Dock.Bottom;
+                string script = @"( () => { var element = document.activeElement; return element.getBoundingClientRect().bottom ; } )();"; //@"document.activeElement";
+                var js = await e.Browser.MainFrame.EvaluateScriptAsync(script);
+                double elemHeightPos = 0;
+                if (Double.TryParse(js?.Result?.ToString(), out elemHeightPos))
                 {
+                    Trace.WriteLine($"OpenKeyboard(): js element pos={elemHeightPos}");
+                    if (elemHeightPos > 400) dockArg = Dock.Top;
+                }
+
+                this.Dispatcher.Invoke(() =>
+                {
+
                     BotFullKeyboard.SetEngLang(false).Height = kbHeight;
+                    TopFullKeyboard.SetEngLang(false).Height = kbHeight;
                     DrawerHost.OpenDrawerCommand.Execute(dockArg, KeyboardHost);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Browser_VirtualKeyboardRequested() {ex.Message}");
-                }
-            });
+
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Browser_VirtualKeyboardRequested() {ex.Message}");
+            }
         }
 
         private void HideKeyboard(object sender)

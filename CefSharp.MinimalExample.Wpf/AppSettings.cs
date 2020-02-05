@@ -8,8 +8,8 @@ namespace CefSharp.MinimalExample.Wpf
 {
     public static class AppSettings
     {
-        //public static readonly string urlMain = "localhost";
-        public static readonly string urlMain = @"C:\work\temp\index.html";
+        public static readonly string urlMain = "localhost";
+        //public static readonly string urlMain = @"C:\work\temp\index.html";
         public static readonly string urlShortMan = urlMain.Replace("http://", "").Replace(@"\", @"/");
 
         public static readonly List<string> UrlsAllowed = new List<string>();
