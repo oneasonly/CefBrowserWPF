@@ -53,9 +53,8 @@ namespace CefSharp.MinimalExample.Wpf
         {
             this.Dispatcher.Invoke(() =>
             {
-                Trace.WriteLine($"url={Browser.Address}: zoom={Browser.ZoomLevel}");
                 if (AppSettings.isUrlNeedZoom(Browser.Address)) Browser.SetZoomLevel(AppSettings.ZoomRate);
-                Trace.WriteLine($"after url={Browser.Address}: zoom={Browser.ZoomLevel}");
+
                 if(Browser.Address.Replace(@"\","/").Contains(AppSettings.urlMain.Replace(@"\", "/")))
                 {
                     buttonBack.IsEnabled = false;
@@ -69,14 +68,20 @@ namespace CefSharp.MinimalExample.Wpf
 
         private void Browser_VirtualKeyboardRequested(object sender, VirtualKeyboardRequestedEventArgs e)
         {
+            if (e.TextInputMode == Enums.TextInputMode.None) HideKeyboard(sender);
+            else OpenKeyboard();
+        }
+
+        private void OpenKeyboard()
+        {
             double kbHeight = 400;
-            Dock dockArg = Dock.Bottom;            
+            Dock dockArg = Dock.Bottom;
             this.Dispatcher.Invoke(() =>
             {
                 try
                 {
                     BotFullKeyboard.SetEngLang(false).Height = kbHeight;
-                    DrawerHost.OpenDrawerCommand.Execute(dockArg, KeyboardHost);                    
+                    DrawerHost.OpenDrawerCommand.Execute(dockArg, KeyboardHost);
                 }
                 catch (Exception ex)
                 {
@@ -85,21 +90,20 @@ namespace CefSharp.MinimalExample.Wpf
             });
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void HideKeyboard(object sender)
         {
-            HideKeyboard(sender);
-        }
+            this.Dispatcher.InvokeAsync(() =>
+            {
+                try
+                {
+                    DrawerHost.CloseDrawerCommand.Execute(null, sender as FrameworkElement);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Browser_VirtualKeyboardRequested() {ex.Message}");
+                }
+            });
 
-        private static void HideKeyboard(object sender)
-        {
-            try
-            {
-                DrawerHost.CloseDrawerCommand.Execute(null, sender as FrameworkElement);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Browser_VirtualKeyboardRequested() {ex.Message}");
-            }
         }
 
         private void Browser_Loaded(object sender, RoutedEventArgs e)
@@ -111,29 +115,29 @@ namespace CefSharp.MinimalExample.Wpf
 
         }
 
-        private async void buttonHome_Click(object sender, RoutedEventArgs e)
-        {
-            await GoHome();
-            HideKeyboard(sender);
-        }
 
         private async Task GoHome()
         {
             Browser.Stop();
             Browser.Address = AppSettings.urlMain;
-            //while (Browser.CanGoBack)
-            //{
-            //    if (!Browser.IsLoading)
-            //    {
-            //        Browser.Back();
-            //    }
-            //    await Task.Delay(50);
-            //}
         }
 
+
+
+        #region buttons clicks
         private void buttonBack_Click(object sender, RoutedEventArgs e)
         {
-            if(Browser.CanGoBack) Browser.Back();
+            if (Browser.CanGoBack) Browser.Back();
         }
+        private async void buttonHome_Click(object sender, RoutedEventArgs e)
+        {
+            await GoHome();
+            HideKeyboard(sender);
+        }
+        private void ButtonCloseKeyboard_Click(object sender, RoutedEventArgs e)
+        {
+            HideKeyboard(sender);
+        }
+        #endregion
     }
 }

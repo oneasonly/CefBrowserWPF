@@ -21,7 +21,7 @@ namespace CefSharp.MinimalExample.Wpf
         public void OnLoadError(IWebBrowser chromiumWebBrowser, LoadErrorEventArgs loadErrorArgs) {}
         public void OnLoadingStateChange(IWebBrowser chromiumWebBrowser, LoadingStateChangedEventArgs loadingStateChangedArgs) 
         {
-            Trace.WriteLine($" isLoading={loadingStateChangedArgs.IsLoading}; canBack={loadingStateChangedArgs.CanGoBack}");
+            //Trace.WriteLine($" isLoading={loadingStateChangedArgs.IsLoading}; canBack={loadingStateChangedArgs.CanGoBack}");
             //if (loadingStateChangedArgs.IsLoading == false) LoadedEvent();
         }
     }
