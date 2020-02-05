@@ -84,12 +84,13 @@ namespace CefSharp.MinimalExample.Wpf
                 if (Double.TryParse(js?.Result?.ToString(), out elemHeightPos))
                 {
                     Trace.WriteLine($"OpenKeyboard(): js element pos={elemHeightPos}");
-                    if (elemHeightPos > 400) dockArg = Dock.Top;
+                    if (elemHeightPos > 425) dockArg = Dock.Top;
                 }
 
                 this.Dispatcher.Invoke(() =>
                 {
-
+                    if (dockArg == Dock.Top && KeyboardHost.IsBottomDrawerOpen || dockArg == Dock.Bottom && KeyboardHost.IsTopDrawerOpen)
+                    { HideKeyboard(KeyboardHost); }
                     BotFullKeyboard.SetEngLang(false).Height = kbHeight;
                     TopFullKeyboard.SetEngLang(false).Height = kbHeight;
                     DrawerHost.OpenDrawerCommand.Execute(dockArg, KeyboardHost);
@@ -104,7 +105,7 @@ namespace CefSharp.MinimalExample.Wpf
 
         private void HideKeyboard(object sender)
         {
-            this.Dispatcher.InvokeAsync(() =>
+            this.Dispatcher.Invoke(() =>
             {
                 try
                 {

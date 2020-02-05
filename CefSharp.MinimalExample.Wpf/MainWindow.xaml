@@ -126,7 +126,7 @@
 
             <Button Click="ButtonCloseKeyboard_Click"
                     Grid.Row="1" 
-                Margin="0 0 -15 400"
+                Margin="0 0 -15 395"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Bottom"                       
                     Background="{x:Null}"
@@ -137,6 +137,30 @@
                         <Setter Property="Visibility" Value="Hidden" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsBottomDrawerOpen, ElementName=KeyboardHost}" Value="True">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+                <materialDesign:PackIcon Kind="CloseCircleOutline" 
+                                         Height="135" Width="135" 
+                                         Foreground="{StaticResource PrimaryHueMidBrush}"
+                                         />
+            </Button>
+
+            <Button Click="ButtonCloseKeyboard_Click"
+                    Grid.Row="1" 
+                Margin="0 0 -15 540"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"                       
+                    Background="{x:Null}"
+                    BorderBrush="{x:Null}">
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedButton}">
+                        <Setter Property="Height" Value="Auto" />
+                        <Setter Property="Visibility" Value="Hidden" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsTopDrawerOpen, ElementName=KeyboardHost}" Value="True">
                                 <Setter Property="Visibility" Value="Visible" />
                             </DataTrigger>
                         </Style.Triggers>
