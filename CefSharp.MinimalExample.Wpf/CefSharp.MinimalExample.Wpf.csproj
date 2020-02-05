@@ -105,11 +105,12 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="cefFocusHandler.cs" />
+    <Compile Include="cefLoadHandler.cs" />
     <Compile Include="cefReqHandler.cs" />
     <Compile Include="cefSpanHand.cs" />
     <Compile Include="CustomMenuHandler.cs" />
     <Compile Include="IdleDetector.cs" />
-    <Compile Include="StaticData.cs" />
+    <Compile Include="AppSettings.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

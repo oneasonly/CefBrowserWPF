@@ -19,7 +19,7 @@ namespace CefSharp.MinimalExample.Wpf
             InitializeComponent();
             //this.Topmost = true;
             this.WindowState = WindowState.Maximized;
-            this.WindowStyle = WindowStyle.None;
+            //this.WindowStyle = WindowStyle.None;
             idleDetector = new IdleDetector(this, idleTimedefault);
             idleDetector.IsIdle += OnIdle;
         }
@@ -29,13 +29,17 @@ namespace CefSharp.MinimalExample.Wpf
         private void Browser_Initialized(object sender, System.EventArgs e)
         {
             Trace.WriteLine("MainWindow.Browser_Initialized()");
-            Browser.Address = StaticData.urlMain;
+            Browser.Address = AppSettings.urlMain;
             var reqHandler = new cefReqHandler();
-            //reqHandler.OnZoomEvent += () => { this.Dispatcher.Invoke(() => Browser.ZoomLevel = 3); };
-            //reqHandler.DefaultZoomEvent += () => { this.Dispatcher.Invoke(() => Browser.ZoomLevel = 0); };
-            Browser.RequestHandler = reqHandler;
+            var loadHandler = new cefLoadHandler();
+
+            loadHandler.LoadedEvent += OnUrlLoaded;
+
+
             Browser.LifeSpanHandler = new cefSpanHand();
-            Browser.MenuHandler = new CustomMenuHandler();             
+            Browser.MenuHandler = new CustomMenuHandler();
+            Browser.RequestHandler = reqHandler;
+            Browser.LoadHandler = loadHandler;
 
             Browser.VirtualKeyboardRequested += Browser_VirtualKeyboardRequested;
 
@@ -43,6 +47,24 @@ namespace CefSharp.MinimalExample.Wpf
             //CefSettings settings = new CefSettings();
             //settings.CefCommandLineArgs.Add("disable-usb-keyboard-detect", "1");
             //Cef.Initialize(settings);
+        }
+
+        private void OnUrlLoaded()
+        {
+            this.Dispatcher.Invoke(() =>
+            {
+                Trace.WriteLine($"url={Browser.Address}: zoom={Browser.ZoomLevel}");
+                if (AppSettings.isUrlNeedZoom(Browser.Address)) Browser.SetZoomLevel(AppSettings.ZoomRate);
+                Trace.WriteLine($"after url={Browser.Address}: zoom={Browser.ZoomLevel}");
+                if(Browser.Address.Replace(@"\","/").Contains(AppSettings.urlMain.Replace(@"\", "/")))
+                {
+                    buttonBack.IsEnabled = false;
+                }
+                else
+                {
+                    buttonBack.IsEnabled = true;
+                }
+            });
         }
 
         private void Browser_VirtualKeyboardRequested(object sender, VirtualKeyboardRequestedEventArgs e)
@@ -98,14 +120,20 @@ namespace CefSharp.MinimalExample.Wpf
         private async Task GoHome()
         {
             Browser.Stop();
-            while (Browser.CanGoBack)
-            {
-                if (!Browser.IsLoading)
-                {
-                    Browser.Back();
-                }
-                await Task.Delay(50);
-            }
+            Browser.Address = AppSettings.urlMain;
+            //while (Browser.CanGoBack)
+            //{
+            //    if (!Browser.IsLoading)
+            //    {
+            //        Browser.Back();
+            //    }
+            //    await Task.Delay(50);
+            //}
+        }
+
+        private void buttonBack_Click(object sender, RoutedEventArgs e)
+        {
+            if(Browser.CanGoBack) Browser.Back();
         }
     }
 }

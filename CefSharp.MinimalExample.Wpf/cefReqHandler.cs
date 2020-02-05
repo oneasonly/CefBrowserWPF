@@ -11,22 +11,12 @@ namespace CefSharp.MinimalExample.Wpf
 {
     public class cefReqHandler : IRequestHandler
     {
-        public event Action OnZoomEvent = ()=> { };
-        public event Action DefaultZoomEvent = () => { };
         public bool OnBeforeBrowse(IWebBrowser chromiumWebBrowser, IBrowser browser, IFrame frame, IRequest request, bool userGesture, bool isRedirect)
         {
-            bool isZoom = request.Url.Contains("82.209.205.124:8080") || request.Url.Contains("82.209.205.124:8080") || request.Url.Contains("82.209.205.124:8080");
-            if (isZoom)
+            bool isMain = frame.IsMain;
+            if (!AppSettings.isUrlAllowed(request.Url) || AppSettings.isContainsBlockedContent(request.Url))
             {
-                OnZoomEvent();
-            }
-            else DefaultZoomEvent();
-
-            bool isAddressCheck = !request.Url.Contains(StaticData.urlHome) && !request.Url.Contains("82.209.205.124:8080") && !request.Url.Contains("82.209.205.124:8080") && !request.Url.Contains("82.209.205.124:8080");
-            bool isFileCheck = request.Url.Contains(".pdf") || request.Url.Contains(".jpg") || request.Url.Contains(".JPG") || request.Url.Contains(".png");
-            if (isAddressCheck || isFileCheck)
-            {
-                browser.StopLoad();
+                if(isMain) browser.StopLoad();
             }
 
             return false;

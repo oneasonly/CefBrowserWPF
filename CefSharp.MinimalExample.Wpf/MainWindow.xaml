@@ -65,7 +65,7 @@
                 <Button Content="View source" Command="{Binding WebBrowser.ViewSourceCommand, ElementName=Browser}" Grid.Column="4" Width="75" />
             </Grid>
 
-            <Border Grid.Row="1" BorderBrush="Gray" BorderThickness="0">
+            <Border Grid.Row="1" BorderThickness="0">
                 <wpf:ChromiumWebBrowser x:Name="Browser"
                                     Address="www.google.com"
                                     Initialized="Browser_Initialized"
@@ -76,23 +76,24 @@
                 </wpf:ChromiumWebBrowser>
             </Border>
 
-            <Button Grid.Row="1"
-                Command="{Binding WebBrowser.BackCommand, ElementName=Browser}" 
-                    Name="buttonBack"
-                Margin="10"
+            <Button Name="buttonBack"
+                    Grid.Row="1"
+                    Click="buttonBack_Click"
+                Margin="14 10 10 10"
                 BorderBrush="{StaticResource PrimaryHueDarkBrush}"
                 Background="{StaticResource PrimaryHueDarkBrush}"
+                    IsEnabled="False"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top">
                 <materialDesign:PackIcon Kind="ArrowLeftBold" 
-                                            Height="70" Width="100" 
+                                            Height="70" Width="80" 
                                                 Foreground="{StaticResource MaterialDesignDarkForeground}"                                                 
                                             />
             </Button>
 
-            <Button Grid.Row="1"
-                    Name="buttonHome"
-                Margin="10"
+            <Button Name="buttonHome"
+                    Grid.Row="1"
+                Margin="10 10 20 10"
                 BorderBrush="{StaticResource PrimaryHueDarkBrush}"
                 Background="{StaticResource PrimaryHueDarkBrush}"
                 HorizontalAlignment="Right"
