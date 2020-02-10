@@ -19,7 +19,7 @@ namespace CefSharp.MinimalExample.Wpf
             InitializeComponent();
             //this.Topmost = true;
             this.WindowState = WindowState.Maximized;
-            this.WindowStyle = WindowStyle.None;
+            //this.WindowStyle = WindowStyle.None;
             idleDetector = new IdleDetector(this, idleTimedefault);
             idleDetector.IsIdle += OnIdle;
         }
@@ -152,5 +152,10 @@ namespace CefSharp.MinimalExample.Wpf
             HideKeyboard(sender);
         }
         #endregion
+
+        private void TestButton_Click(object sender, RoutedEventArgs e)
+        {
+            Browser.Reload(true);
+        }
     }
 }

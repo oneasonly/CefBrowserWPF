@@ -18,6 +18,12 @@
         </ResourceDictionary>
     </Window.Resources>
 
+    <Window.InputBindings>
+        <KeyBinding Gesture="F5"
+                    Command="{Binding WebBrowser.ReloadCommand, ElementName=Browser}"
+                    CommandParameter="true" />
+    </Window.InputBindings>
+
     <materialDesign:DrawerHost Name="KeyboardHost"
                                Style="{DynamicResource KeyboardDrawer}"
               HorizontalAlignment="Stretch"
