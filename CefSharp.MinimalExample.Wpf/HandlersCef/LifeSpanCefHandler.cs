@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CefSharp.MinimalExample.Wpf
+namespace CefSharp.MinimalExample.Wpf.HandlersCef
 {
-    class cefSpanHand : ILifeSpanHandler
+    class LifeSpanCefHandler : ILifeSpanHandler
     {
         public bool DoClose(IWebBrowser browserControl, IBrowser browser)
         {

@@ -7,6 +7,7 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Idle;
+using CefSharp.MinimalExample.Wpf.HandlersCef;
 
 namespace CefSharp.MinimalExample.Wpf
 {
@@ -30,16 +31,28 @@ namespace CefSharp.MinimalExample.Wpf
         {
             Trace.WriteLine("MainWindow.Browser_Initialized()");
             Browser.Address = AppSettings.urlMain;
-            var reqHandler = new cefReqHandler();
-            var loadHandler = new cefLoadHandler();
+            var reqHandler = new RequestCefHandler();
+            var loadHandler = new LoadCefHandler();
 
             loadHandler.LoadedEvent += OnUrlLoaded;
+            loadHandler.LoadErrorEvent += (web, arg) => this.Dispatcher.Invoke(async() => 
+            { 
+                while (true) 
+                {
+                    Trace.WriteLine($"LoadErrorEvent()");
+                    await Task.Delay(50); 
+                    if (web.CanGoBack) web.Back(); 
+                    break; 
+                } 
+            });
 
 
-            Browser.LifeSpanHandler = new cefSpanHand();
+            Browser.LifeSpanHandler = new LifeSpanCefHandler();
             Browser.MenuHandler = new CustomMenuHandler();
+            Browser.DialogHandler = new DialogCefHandler();
             Browser.RequestHandler = reqHandler;
             Browser.LoadHandler = loadHandler;
+            
 
             Browser.VirtualKeyboardRequested += Browser_VirtualKeyboardRequested;
 
@@ -55,7 +68,7 @@ namespace CefSharp.MinimalExample.Wpf
             {
                 if (AppSettings.isUrlNeedZoom(Browser.Address)) Browser.SetZoomLevel(AppSettings.ZoomRate);
 
-                if(Browser.Address.Replace(@"\","/").Contains(AppSettings.urlMain.Replace(@"\", "/")))
+                if(AppSettings.UrlToShort(Browser.Address) == AppSettings.urlShortMain)
                 {
                     buttonBack.IsEnabled = false;
                 }

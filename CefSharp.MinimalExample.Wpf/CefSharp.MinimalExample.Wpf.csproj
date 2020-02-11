@@ -104,11 +104,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="cefFocusHandler.cs" />
-    <Compile Include="cefLoadHandler.cs" />
-    <Compile Include="cefReqHandler.cs" />
-    <Compile Include="cefSpanHand.cs" />
-    <Compile Include="CustomMenuHandler.cs" />
+    <Compile Include="HandlersCef\FocusCefHandler.cs" />
+    <Compile Include="HandlersCef\LoadCefHandler.cs" />
+    <Compile Include="HandlersCef\RequestCefHandler.cs" />
+    <Compile Include="HandlersCef\LifeSpanCefHandler.cs" />
+    <Compile Include="HandlersCef\CustomMenuHandler.cs" />
+    <Compile Include="HandlersCef\DialogCefHandler.cs" />
     <Compile Include="IdleDetector.cs" />
     <Compile Include="AppSettings.cs" />
     <Page Include="MainWindow.xaml">

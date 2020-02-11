@@ -7,16 +7,17 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CefSharp.MinimalExample.Wpf
+namespace CefSharp.MinimalExample.Wpf.HandlersCef
 {
-    public class cefReqHandler : IRequestHandler
+    public class RequestCefHandler : IRequestHandler
     {
         public bool OnBeforeBrowse(IWebBrowser chromiumWebBrowser, IBrowser browser, IFrame frame, IRequest request, bool userGesture, bool isRedirect)
         {
             bool isMain = frame.IsMain;
+            Trace.WriteLine($"OnBeforeBrowse() isMain={isMain}; url={request.Url}");
             if (!AppSettings.isUrlAllowed(request.Url) || AppSettings.isContainsBlockedContent(request.Url))
             {
-                if(isMain) browser.StopLoad();
+                if (isMain) return true; //remove isMain check to block outside frames
             }
 
             return false;

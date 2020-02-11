@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CefSharp.MinimalExample.Wpf
+namespace CefSharp.MinimalExample.Wpf.HandlersCef
 {
-    public class cefFocusHandler : IFocusHandler
+    public class FocusCefHandler : IFocusHandler
     {
         public event Action OnTakeFocusEvent = ()=> { };
         public void OnGotFocus(IWebBrowser chromiumWebBrowser, IBrowser browser) { }

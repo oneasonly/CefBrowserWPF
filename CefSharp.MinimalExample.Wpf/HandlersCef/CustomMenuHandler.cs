@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CefSharp.MinimalExample.Wpf
+namespace CefSharp.MinimalExample.Wpf.HandlersCef
 {
     public class CustomMenuHandler : IContextMenuHandler
     {
