@@ -17,25 +17,20 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-
     <Window.InputBindings>
         <KeyBinding Gesture="F5"
                     Command="{Binding WebBrowser.ReloadCommand, ElementName=Browser}"
                     CommandParameter="true" />
     </Window.InputBindings>
 
-    <materialDesign:DrawerHost Name="KeyboardHost"
-                               Style="{DynamicResource KeyboardDrawer}"
-              HorizontalAlignment="Stretch"
-              VerticalAlignment="Stretch" 
-                               >
+    <materialDesign:DrawerHost Name="KeyboardHost" Style="{DynamicResource KeyboardDrawer}"
+              HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
 
         <materialDesign:DrawerHost.BottomDrawerContent>
             <materialDesign:ColorZone Mode="Standard" >
                 <keyb:FullKeyboard x:Name="BotFullKeyboard"/>
             </materialDesign:ColorZone>
         </materialDesign:DrawerHost.BottomDrawerContent>
-
         <materialDesign:DrawerHost.TopDrawerContent>
             <materialDesign:ColorZone Mode="Standard"  >
                 <keyb:FullKeyboard x:Name="TopFullKeyboard"/>
@@ -43,13 +38,13 @@
         </materialDesign:DrawerHost.TopDrawerContent>
 
         <Grid>
+            
             <Grid.RowDefinitions>
                 <RowDefinition Height="0" />
                 <RowDefinition />
-                <RowDefinition Height="0" />
             </Grid.RowDefinitions>
 
-            <Grid>
+            <Grid Name="addressBarBrowser">
                 <Grid.Resources>
                     <Style TargetType="{x:Type Button}">
                         <Setter Property="Margin" Value="2,5" />
@@ -77,152 +72,111 @@
                 <Button Content="View source" Command="{Binding WebBrowser.ViewSourceCommand, ElementName=Browser}" Grid.Column="4" Width="75" />
             </Grid>
 
-            <wpf:ChromiumWebBrowser x:Name="Browser"
-                                    Address="www.google.com"
-                                    Initialized="Browser_Initialized"
-                                    Grid.Row="1"
-                                    Loaded="Browser_Loaded">
-                <i:Interaction.Behaviors>
-                    <behaviours:HoverLinkBehaviour x:Name="HoverLinkBehaviour"/>
-                </i:Interaction.Behaviors>
-            </wpf:ChromiumWebBrowser>
+            <DockPanel Grid.Row="1" Name="browsersWindows">
 
-            <Button Name="buttonBack"
-                    Grid.Row="1"
-                    Click="buttonBack_Click"
-                Margin="14 10 10 10"
-                BorderBrush="{StaticResource PrimaryHueDarkBrush}"
-                Background="{StaticResource PrimaryHueDarkBrush}"
-                    IsEnabled="False"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top">
-                <materialDesign:PackIcon Kind="ArrowLeftBold" 
-                                            Height="70" Width="80" 
-                                                Foreground="{StaticResource MaterialDesignDarkForeground}"                                                 
-                                            />
-            </Button>
+                <wpf:ChromiumWebBrowser Name="secondaryBrowser" DockPanel.Dock="Top" Height="607.5" Address="http://82.209.232.62:10000" />
 
-            <Button Name="buttonReload"
-                    Grid.Row="1"
-                    Command="{Binding WebBrowser.ReloadCommand, ElementName=Browser}"
-                Margin="0 10 120 10"
-                BorderBrush="{StaticResource PrimaryHueDarkBrush}"
-                Background="{StaticResource PrimaryHueDarkBrush}"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top"
-                    Padding="20">
-                <materialDesign:PackIcon Kind="Reload" 
-                                            Height="50" Width="50" 
-                                                Foreground="{StaticResource MaterialDesignDarkForeground}"                                                 
-                                            />
-                <Button.Style>
-                    <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFloatingActionButton}">
-                        <Setter Property="Height" Value="Auto" />
-                        <Setter Property="Width" Value="Auto" />
-                        <Setter Property="Visibility" Value="Hidden" />
-                        <!--<Style.Triggers>
-                            <DataTrigger Binding="{Binding IsEnabled, ElementName=buttonReload}" Value="True">
-                                <Setter Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                        </Style.Triggers>-->
-                    </Style>
-                </Button.Style>
-            </Button>
+                <Grid Name="BrowserAndOverlaysContainer">
+                    
+                    <wpf:ChromiumWebBrowser Name="Browser" Initialized="Browser_Initialized">
+                        <i:Interaction.Behaviors>
+                            <behaviours:HoverLinkBehaviour x:Name="HoverLinkBehaviour"/>
+                        </i:Interaction.Behaviors>
+                    </wpf:ChromiumWebBrowser>
 
-            <Button Name="buttonHome"
-                    Grid.Row="1"
-                Margin="10 10 20 10"
-                BorderBrush="{StaticResource PrimaryHueDarkBrush}"
-                Background="{StaticResource PrimaryHueDarkBrush}"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top"
-                    Padding="20"
-                    Click="buttonHome_Click">
-                <materialDesign:PackIcon Kind="Home" 
-                                            Height="50" Width="50" 
-                                                Foreground="{StaticResource MaterialDesignDarkForeground}"                                                 
-                                            />
-                <Button.Style>
-                    <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFloatingActionButton}">
-                        <Setter Property="Height" Value="Auto" />
-                        <Setter Property="Width" Value="Auto" />
-                        <Setter Property="Visibility" Value="Hidden" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsEnabled, ElementName=buttonBack}" Value="True">
-                                <Setter Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Button.Style>
-            </Button>
+                    <Grid Name="OverlaysContainer" Grid.Row="1">
 
-            <Button Click="ButtonCloseKeyboard_Click"
-                    Grid.Row="1" 
-                Margin="0 0 -15 395"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Bottom"                       
-                    Background="{x:Null}"
-                    BorderBrush="{x:Null}">
-                <Button.Style>
-                    <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedButton}">
-                        <Setter Property="Height" Value="Auto" />
-                        <Setter Property="Visibility" Value="Hidden" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsBottomDrawerOpen, ElementName=KeyboardHost}" Value="True">
-                                <Setter Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Button.Style>
-                <materialDesign:PackIcon Kind="CloseCircleOutline" 
-                                         Height="135" Width="135" 
-                                         Foreground="{StaticResource PrimaryHueMidBrush}"
-                                         />
-            </Button>
+                        <Button Name="buttonBack" Click="buttonBack_Click" Opacity="0.9" Margin="14 10 10 10"
+                        BorderBrush="{StaticResource PrimaryHueDarkBrush}" Background="{StaticResource PrimaryHueDarkBrush}"
+                        IsEnabled="False" HorizontalAlignment="Left" VerticalAlignment="Top">
+                            <materialDesign:PackIcon Kind="ArrowLeftBold" Height="70" Width="80" Foreground="{StaticResource MaterialDesignDarkForeground}"/>
+                        </Button>
 
-            <Button Click="ButtonCloseKeyboard_Click"
-                    Grid.Row="1" 
-                Margin="0 0 -15 540"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Bottom"                       
-                    Background="{x:Null}"
-                    BorderBrush="{x:Null}">
-                <Button.Style>
-                    <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedButton}">
-                        <Setter Property="Height" Value="Auto" />
-                        <Setter Property="Visibility" Value="Hidden" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsTopDrawerOpen, ElementName=KeyboardHost}" Value="True">
-                                <Setter Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Button.Style>
-                <materialDesign:PackIcon Kind="CloseCircleOutline" 
-                                         Height="135" Width="135" 
-                                         Foreground="{StaticResource PrimaryHueMidBrush}"
-                                         />
-            </Button>
+                        <Button Name="buttonReload" Click="ReloadButton_Click" Margin="10 10 20 10" Opacity="0.8"
+                    BorderBrush="{StaticResource PrimaryHueDarkBrush}" Background="{StaticResource PrimaryHueDarkBrush}"
+                    HorizontalAlignment="Right" VerticalAlignment="Top" Padding="20">
+                            <materialDesign:PackIcon Kind="Reload" Height="50" Width="50" Foreground="{StaticResource MaterialDesignDarkForeground}"/>
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFloatingActionButton}">
+                                    <Setter Property="Height" Value="Auto" />
+                                    <Setter Property="Width" Value="Auto" />
+                                    <Setter Property="Visibility" Value="Visible" />
+                                    <!--<Style.Triggers>
+                                <DataTrigger Binding="{Binding IsEnabled, ElementName=buttonReload}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>-->
+                                </Style>
+                            </Button.Style>
+                        </Button>
 
-            <ProgressBar IsIndeterminate="{Binding IsLoading, ElementName=Browser}"
-                     HorizontalAlignment="Stretch"
-                     VerticalAlignment="Bottom"
-                     Width="Auto"
-                     Grid.Row="1"
-                     Height="8"
-                     Visibility="{Binding IsLoading, ElementName=Browser, Converter={StaticResource BooleanToVisibilityConverter}}"
-                     BorderThickness="0" />
+                        <Button Name="buttonHome" Margin="0 120 20 10" Opacity="0.8"
+                    BorderBrush="{StaticResource PrimaryHueDarkBrush}" Background="{StaticResource PrimaryHueDarkBrush}"
+                    HorizontalAlignment="Right" VerticalAlignment="Top" Padding="20" Click="buttonHome_Click">
+                            <materialDesign:PackIcon Kind="Home" Height="50" Width="50" Foreground="{StaticResource MaterialDesignDarkForeground}"/>
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFloatingActionButton}">
+                                    <Setter Property="Height" Value="Auto" />
+                                    <Setter Property="Width" Value="Auto" />
+                                    <Setter Property="Visibility" Value="Hidden" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsEnabled, ElementName=buttonBack}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
 
-            <ProgressBar IsIndeterminate="true"
-                     Style="{StaticResource MaterialDesignCircularProgressBar}"
-                     HorizontalAlignment="Center"
-                     VerticalAlignment="Center"
-                     Grid.Row="1"
-                     Height="50" Width="50"                    
-                     Value="0"
-                         BorderThickness="40"
-                     Visibility="{Binding IsLoading, ElementName=Browser, Converter={StaticResource BooleanToVisibilityConverter}}"
-                     />
+                        <Button Click="ButtonCloseKeyboard_Click" Margin="0 0 -15 395" HorizontalAlignment="Right" VerticalAlignment="Bottom"                       
+                        Background="{x:Null}" BorderBrush="{x:Null}">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedButton}">
+                                    <Setter Property="Height" Value="Auto" />
+                                    <Setter Property="Visibility" Value="Hidden" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsBottomDrawerOpen, ElementName=KeyboardHost}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                            <materialDesign:PackIcon Kind="CloseCircleOutline" 
+                                             Height="135" Width="135" 
+                                             Foreground="{StaticResource PrimaryHueMidBrush}"
+                                             />
+                        </Button>
+
+                        <Button Click="ButtonCloseKeyboard_Click" Margin="0 0 -15 540" HorizontalAlignment="Right" VerticalAlignment="Bottom"                       
+                        Background="{x:Null}" BorderBrush="{x:Null}">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedButton}">
+                                    <Setter Property="Height" Value="Auto" />
+                                    <Setter Property="Visibility" Value="Hidden" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsTopDrawerOpen, ElementName=KeyboardHost}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                            <materialDesign:PackIcon Kind="CloseCircleOutline" 
+                                             Height="135" Width="135" 
+                                             Foreground="{StaticResource PrimaryHueMidBrush}"
+                                             />
+                        </Button>
+
+                        <ProgressBar IsIndeterminate="{Binding IsLoading, ElementName=Browser}"  BorderThickness="0" 
+                         VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Width="Auto" Height="8" 
+                         Visibility="{Binding IsLoading, ElementName=Browser, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+                        <ProgressBar IsIndeterminate="true" Style="{StaticResource MaterialDesignCircularProgressBar}"
+                         HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Width="50" Value="0" BorderThickness="40"
+                         Visibility="{Binding IsLoading, ElementName=Browser, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+                    </Grid>
+                </Grid>
+            </DockPanel>
 
         </Grid>
 
